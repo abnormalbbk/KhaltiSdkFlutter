@@ -1,14 +1,9 @@
 import 'dart:async';
-
+import 'package:meta/meta.dart';
 import 'package:flutter/services.dart';
 
 class Flutterplugin {
   static const MethodChannel _channel = const MethodChannel('flutterplugin');
-
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
 
   static Future showFlutterCheckout(Config config) async {
     return await _channel.invokeMapMethod(
@@ -20,23 +15,34 @@ class Config {
   final String publicKey;
   final String productID;
   final String productName;
-  final String amount;
-  final PaymentPreference paymentPreference;
+  final int amountInPaisa;
+  final List<PaymentPreference> paymentPreferences;
+  final Map<String, dynamic> additionalData;
+  final String productUrl;
+  final String mobileNo;
 
-  Config(
-      {this.publicKey,
-      this.productID,
-      this.productName,
-      this.amount,
-      this.paymentPreference});
+  Config({
+    @required this.publicKey,
+    @required this.productID,
+    @required this.productName,
+    @required this.amountInPaisa,
+    this.paymentPreferences,
+    this.additionalData,
+    this.productUrl,
+    this.mobileNo,
+  });
 
   Map<String, dynamic> toMap() {
     return {
       'public_key': publicKey,
       'product_id': productID,
       'product_name': productName,
-      'amount': amount,
-      'payment_preference': paymentPreference.toString(),
+      'amount': amountInPaisa,
+      'payment_preferences':
+          paymentPreferences.map((a) => a.toString()).toList(),
+      'additional_data': additionalData,
+      'product_url': productUrl,
+      'mobile': mobileNo,
     };
   }
 }
