@@ -39,7 +39,7 @@ class Config {
       'product_name': productName,
       'amount': amountInPaisa,
       'payment_preferences':
-          paymentPreferences.map((a) => a.toString()).toList(),
+          paymentPreferences.map((a) => a.toString().split('.').last).toList(),
       'additional_data': additionalData,
       'product_url': productUrl,
       'mobile': mobileNo,

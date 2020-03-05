@@ -1,5 +1,6 @@
 package comflutterbeginner.bibek.flutterplugin
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
@@ -38,6 +39,7 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
         }
     }
 
+    @SuppressLint("LongLogTag")
     private fun makePaymentViaKhalti(data: HashMap<String, Any>, result: Result) {
         Log.i("makePaymentViaKhalti", "makePaymentViaKhalti")
         val builder: Config.Builder = Config.Builder(
@@ -74,7 +76,9 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
             val paymentPreferences: List<String> = data["payment_preferences"] as List<String>
             if (EmptyUtil.isNotNull(paymentPreferences) && paymentPreferences.isNotEmpty()) {
                 for (p in paymentPreferences) {
-                    selectedPaymentPreference.add(PaymentPreference.valueOf(p))
+                    Log.i("Payment Preference", p);
+                    Log.i("Payment Preference Get from Value", from(p).toString());
+                    selectedPaymentPreference.add(from(p))
                 }
             }
         }
@@ -109,5 +113,10 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
     override fun onDetachedFromActivityForConfigChanges() {
         TODO("Not yet implemented")
     }
+
+    companion object {
+        fun from(search: String): PaymentPreference = requireNotNull(PaymentPreference.values().find { it.value == search }) { "No Payment Preference with value $search" }
+    }
+
 
 }
