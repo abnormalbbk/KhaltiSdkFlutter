@@ -1,8 +1,6 @@
 package comflutterbeginner.bibek.flutterplugin
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.annotation.NonNull
 import com.khalti.checkout.helper.Config
 import com.khalti.checkout.helper.KhaltiCheckOut
@@ -16,7 +14,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlin.collections.HashMap
 
 
 /** FlutterpluginPlugin */
@@ -24,39 +21,30 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
     private lateinit var appContext: Context
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        Log.i("OnAttachToEngine", "OnAttachToEngine")
-        val channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutterplugin")
+        val channel = MethodChannel(flutterPluginBinding.binaryMessenger, "khalti")
         channel.setMethodCallHandler(this);
-        appContext = flutterPluginBinding.applicationContext
-        Log.i("OnAttachToEngine", "OnAttachToEngine2")
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-
-        Log.i("onMethodCall", "onMethodCall")
         when (call.method) {
             "makePaymentViaKhalti" -> makePaymentViaKhalti(call.arguments as HashMap<String, Any>, result);
         }
     }
 
-    @SuppressLint("LongLogTag")
     private fun makePaymentViaKhalti(data: HashMap<String, Any>, result: Result) {
-        Log.i("makePaymentViaKhalti", "makePaymentViaKhalti")
-        val builder: Config.Builder = Config.Builder(
-                castToString(data, "public_key"),
-                castToString(data, "product_id"),
-                castToString(data, "product_name"),
-                (data["amount"] as Int).toLong(), object : OnCheckOutListener {
-            override fun onSuccess(@NonNull data: Map<String, Any>) {
-                Log.i("success", data.toString())
-                result.success(data)
-            }
+        lateinit var builder: Config.Builder;
+        with(data) {
+            builder = Config.Builder(of("public_key"), of("product_id"), of("product_name"), of("amount"), object : OnCheckOutListener {
+                override fun onSuccess(data: MutableMap<String, Any>) {
+                    result.success(data)
+                }
 
-            override fun onError(action: String, errorMap: MutableMap<String, String>) {
-                Log.i(action, errorMap.toString())
-                result.error("", errorMap.toString(), errorMap.toString())
-            }
-        })
+                override fun onError(action: String, errorMap: MutableMap<String, String>) {
+                    result.error("", errorMap.toString(), errorMap)
+                }
+
+            })
+        }
 
         val selectedPaymentPreference: ArrayList<PaymentPreference> = ArrayList();
 
@@ -65,19 +53,17 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
         }
 
         if (data.containsKey("product_url") && data["product_url"] != null) {
-            builder.productUrl(castToString(data, "product_url"))
+            builder.productUrl(data.of("product_url"))
         }
 
         if (data.containsKey("mobile") && data["mobile"] != null) {
-            builder.mobile(castToString(data, "mobile"))
+            builder.mobile(data.of( "mobile"))
         }
 
         if (data.containsKey("payment_preferences") && data["payment_preferences"] != null) {
-            val paymentPreferences: List<String> = data["payment_preferences"] as List<String>
+            val paymentPreferences = data["payment_preferences"] as List<String>
             if (EmptyUtil.isNotNull(paymentPreferences) && paymentPreferences.isNotEmpty()) {
                 for (p in paymentPreferences) {
-                    Log.i("Payment Preference", p);
-                    Log.i("Payment Preference Get from Value", from(p).toString());
                     selectedPaymentPreference.add(from(p))
                 }
             }
@@ -86,36 +72,38 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
         val config = builder.build()
 
         if (::appContext.isInitialized) {
-            KhaltiCheckOut(appContext, config).show();
+            KhaltiCheckOut(appContext, config).show()
         }
     }
 
-    private fun castToString(data: HashMap<String, Any>, key: Any): String {
-        return data[key] as String;
+    private fun <T> HashMap<String, Any>.of(key: String): T {
+        return when(val value = this[key]){
+            is Int ->  value.toLong() as T
+            else -> value as T
+        }
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     }
 
+    companion object {
+        fun from(search: String): PaymentPreference = requireNotNull(PaymentPreference.values().find { it.value == search }) { "No Payment Preference with value $search" }
+    }
+
     override fun onDetachedFromActivity() {
-        TODO("Not yet implemented")
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        TODO("Not yet implemented")
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        Log.i("onAttachedToActivity", "onAttachedToActivity")
-        this.appContext = binding.activity
+        appContext = binding.activity
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        TODO("Not yet implemented")
-    }
-
-    companion object {
-        fun from(search: String): PaymentPreference = requireNotNull(PaymentPreference.values().find { it.value == search }) { "No Payment Preference with value $search" }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

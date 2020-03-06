@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterplugin/flutterplugin.dart';
+import 'package:flutterplugin/khalti_checkout.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutterplugin');
