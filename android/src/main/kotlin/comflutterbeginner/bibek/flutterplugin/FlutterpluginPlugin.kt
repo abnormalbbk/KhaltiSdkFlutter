@@ -64,6 +64,7 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
             val paymentPreferences = data["payment_preferences"] as List<String>
             if (EmptyUtil.isNotNull(paymentPreferences) && paymentPreferences.isNotEmpty()) {
                 for (p in paymentPreferences) {
+                    print("THere")
                     selectedPaymentPreference.add(from(p))
                 }
             }

@@ -55,21 +55,22 @@ class Config {
   }) : assert(publicKey != null &&
             productID != null &&
             productName != null &&
-            amountInPaisa != null &&
-            paymentPreferences != null);
+            amountInPaisa != null);
 
   Map<String, dynamic> toMap() => {
         'public_key': publicKey,
         'product_id': productID,
         'product_name': productName,
         'amount': amountInPaisa,
-        'payment_preferences': paymentPreferences
-            .map((a) => a.toString().split('.').last)
-            .toList(),
+        'payment_preferences': (paymentPreferences != null)
+            ? (paymentPreferences
+                .map((a) => a.toString().split('.').last)
+                .toList())
+            : null,
         'additional_data': additionalData,
         'product_url': productUrl,
         'mobile': mobileNo,
       };
 }
 
-enum PaymentPreference { khalti, sct, ebanking, mobile_banking, connect_ips }
+enum PaymentPreference { khalti, sct, ebanking, mobilecheckout, connectips }

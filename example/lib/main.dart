@@ -6,12 +6,12 @@ void main() => runApp(Home());
 class Home extends StatelessWidget {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  final List<String> _paymentPreferences = [
+  final List<PaymentPreference> _paymentPreferences = [
     PaymentPreference.khalti,
-    PaymentPreference.e_banking,
-    PaymentPreference.connect_ips,
+    PaymentPreference.ebanking,
+    PaymentPreference.connectips,
     PaymentPreference.sct,
-    PaymentPreference.mobile_banking,
+    PaymentPreference.mobilecheckout,
   ];
 
   @override
@@ -41,7 +41,7 @@ class Home extends StatelessWidget {
     try {
       dynamic result = await KhaltiCheckOut.show(
         Config(
-          publicKey: 'test_public_key_3e980bcab8034736bd150f18f7789a87',
+          publicKey: Keys.testPublicKey,
           amountInPaisa: 1000,
           paymentPreferences: _paymentPreferences,
           productName: 'This is name',
@@ -64,4 +64,9 @@ class Home extends StatelessWidget {
           content: Text(message),
         ),
       );
+}
+
+class Keys {
+  static final String testPublicKey =
+      "test_public_key_5807f0b5c76c47b483387fcdae434e71";
 }
