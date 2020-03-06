@@ -5,9 +5,14 @@ import 'package:flutter/services.dart';
 class Flutterplugin {
   static const MethodChannel _channel = const MethodChannel('flutterplugin');
 
-  static Future showFlutterCheckout(Config config) async {
-    return await _channel.invokeMapMethod(
-        'makePaymentViaKhalti', config.toMap());
+  static Future showKhaltiCheckout(Config config) async {
+    try {
+      return await _channel.invokeMapMethod(
+          'makePaymentViaKhalti', config.toMap());
+    } catch (e) {
+      print("Exception Raised : ${e.toString()}");
+      throw Exception(e.toString());
+    }
   }
 }
 
@@ -30,7 +35,11 @@ class Config {
     this.additionalData,
     this.productUrl,
     this.mobileNo,
-  });
+  }) : assert(publicKey != null &&
+            productID != null &&
+            productName != null &&
+            amountInPaisa != null &&
+            paymentPreferences != null);
 
   Map<String, dynamic> toMap() {
     return {

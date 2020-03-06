@@ -94,29 +94,24 @@ public class FlutterpluginPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
         return data[key] as String;
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    }
-
-    override fun onDetachedFromActivity() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        TODO("Not yet implemented")
-    }
-
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         Log.i("onAttachedToActivity", "onAttachedToActivity")
         this.appContext = binding.activity
     }
 
+    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    }
+
+    override fun onDetachedFromActivity() {
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+    }
+
     override fun onDetachedFromActivityForConfigChanges() {
-        TODO("Not yet implemented")
     }
 
     companion object {
         fun from(search: String): PaymentPreference = requireNotNull(PaymentPreference.values().find { it.value == search }) { "No Payment Preference with value $search" }
     }
-
-
 }

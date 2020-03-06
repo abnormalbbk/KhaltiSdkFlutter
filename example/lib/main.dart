@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:flutterplugin/flutterplugin.dart';
 
 void main() => runApp(Home());
@@ -15,15 +12,24 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Container(
-        child: Center(
-          child: RaisedButton(
-            child: Text('Pay 100'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Khalti Sdk Flutter Demo'),
+        ),
+        body: Center(
+          child: MaterialButton(
+            height: 50,
+            color: Theme.of(context).accentColor,
+            child: Text(
+              'Pay Rs. 100',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onPressed: () {
-              Flutterplugin.showFlutterCheckout(
+              Flutterplugin.showKhaltiCheckout(
                 Config(
-                    publicKey:
-                        "test_public_key_3e980bcab8034736bd150f18f7789a87",
+                    publicKey: null,
                     amountInPaisa: 1000,
                     paymentPreferences: _paymentPreferences,
                     productName: "This is name",
